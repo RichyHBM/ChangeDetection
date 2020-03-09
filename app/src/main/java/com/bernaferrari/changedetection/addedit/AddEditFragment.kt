@@ -121,6 +121,7 @@ class AddEditFragment : AddEditBaseFragment() {
         currentSite?.also {
             title.text = it.title?.toEditText()
             url.text = it.url.toEditText()
+            cssSelector.text = it.cssSelector?.toEditText()
             tags.text = it.notes.toEditText()
             checkbox.isChecked = it.isBrowser
             browserScrollView.isVisible = checkbox.isChecked
@@ -172,6 +173,7 @@ class AddEditFragment : AddEditBaseFragment() {
             val updatedSite = item.copy(
                 title = title.text.toString(),
                 url = currentUrl,
+                cssSelector = cssSelector.text.toString(),
                 notes = tags.text.toString(),
                 isBrowser = checkbox.isChecked,
                 colors = selectedColors
@@ -191,6 +193,7 @@ class AddEditFragment : AddEditBaseFragment() {
             val site = Site(
                 title = title.text.toString(),
                 url = url.text.toString(),
+                cssSelector = cssSelector.text.toString(),
                 tags = tags.text.toString(),
                 isBrowser = checkbox.isChecked,
                 timestamp = System.currentTimeMillis(),

@@ -18,6 +18,7 @@ import java.util.*
 data class Site(
     val title: String?,
     val url: String,
+    val cssSelector: String?,
     val timestamp: Long,
     @field:PrimaryKey
     @field:ColumnInfo(name = "siteId")
@@ -37,6 +38,7 @@ data class Site(
     constructor(
         title: String?,
         url: String,
+        cssSelector: String?,
         timestamp: Long,
         tags: String,
         id: String,
@@ -45,6 +47,7 @@ data class Site(
     ) : this(
         title,
         url,
+        cssSelector,
         timestamp,
         id,
         true,
@@ -62,6 +65,7 @@ data class Site(
     constructor(
         title: String?,
         url: String,
+        cssSelector: String?,
         timestamp: Long,
         id: String,
         colors: ColorGroup,
@@ -71,6 +75,7 @@ data class Site(
     ) : this(
         title,
         url,
+        cssSelector,
         timestamp,
         id,
         true,
@@ -88,6 +93,7 @@ data class Site(
     constructor(
         title: String?,
         url: String,
+        cssSelector: String?,
         timestamp: Long,
         tags: String,
         colors: ColorGroup,
@@ -96,6 +102,7 @@ data class Site(
     ) : this(
         title,
         url,
+        cssSelector,
         timestamp,
         UUID.randomUUID().toString(),
         true,
@@ -110,7 +117,7 @@ data class Site(
     )
 
     override fun toString(): String {
-        return "Site: $title | url: $url | tags: $notes | timestamp: $timestamp"
+        return "Site: $title | url: $url | css: $cssSelector | tags: $notes | timestamp: $timestamp"
     }
 
     internal class ConstraintsConverter {

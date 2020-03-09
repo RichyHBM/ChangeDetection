@@ -73,6 +73,7 @@ abstract class AddEditBaseFragment : DaggerFragment(), CoroutineScope by MainSco
         if (savedInstanceState != null) {
             title.text = savedInstanceState.getString("title")?.toEditText()
             url.text = savedInstanceState.getString("url")?.toEditText()
+            cssSelector.text = savedInstanceState.getString("cssSelector")?.toEditText()
             tags.text = savedInstanceState.getString("tags")?.toEditText()
             savedInstanceState.getBoolean("useBrowser").also {
                 checkbox.isChecked = it

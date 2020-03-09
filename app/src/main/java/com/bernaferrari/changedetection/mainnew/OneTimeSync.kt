@@ -22,8 +22,11 @@ import com.orhanobut.logger.Logger
 import io.karn.notify.Notify
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
+import org.jsoup.Jsoup
+import org.jsoup.nodes.Document
 import org.threeten.bp.LocalTime
 import com.bernaferrari.changedetection.repo.source.Result as DataResult
+
 
 class OneTimeSync(
     val context: Context,
@@ -102,11 +105,19 @@ class OneTimeSync(
         content: ByteArray,
         item: Site
     ) = withContext(Dispatchers.IO) {
-        Logger.d("count size -> ${content.size}")
+
+        val siteBody = if(item.cssSelector.isNullOrEmpty()) content
+        else {
+            val siteBody = content.toString(Charsets.UTF_8)
+            val doc: Document = Jsoup.parse(siteBody)
+            doc.select(item.cssSelector).outerHtml().toByteArray()
+        }
+
+        Logger.d("count size -> ${siteBody.size} ")
 
         val newSite = item.copy(
             timestamp = System.currentTimeMillis(),
-            isSuccessful = content.isNotEmpty()
+            isSuccessful = siteBody.isNotEmpty()
         )
 
         Injector.get().sitesRepository().updateSite(newSite)
@@ -117,7 +128,7 @@ class OneTimeSync(
             timestamp = newSite.timestamp,
             contentType = contentTypeCharset.split(";").first(),
             contentCharset = contentTypeCharset.findCharset(),
-            contentSize = content.size
+            contentSize = siteBody.size
         )
 
         // This will be used to verify if there is a previous snap.
@@ -125,7 +136,7 @@ class OneTimeSync(
         val lastSnap = Injector.get().snapsRepository().getMostRecentSnap(item.id)
 
         val snapSavedResult =
-            Injector.get().snapsRepository().saveSnap(snap, content, newSite.threshold)
+            Injector.get().snapsRepository().saveSnap(snap, siteBody, newSite.threshold)
 
         if (snapSavedResult is DataResult.Success && lastSnap != null) {
             notifyUser(item, snap, newSite)
